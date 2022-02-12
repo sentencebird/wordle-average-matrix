@@ -22,7 +22,7 @@ class Twitter():
     def __init__(self):
         self.OAuth = OAuth1(API_KEY, API_KEY_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         
-    def search_query_by_request(self, query, max_results=10000, next_token=None):
+    def search_query_by_request(self, query, max_results=100, next_token=None):
         url = 'https://api.twitter.com/2/tweets/search/recent'
         #query += " exclude:nativeretweets filter:media"
         params = {'query': query, 'max_results': max_results, 'next_token': next_token}
