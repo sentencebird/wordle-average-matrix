@@ -21,7 +21,7 @@ def set_dataframe_per_score():
     df = pd.DataFrame(res)
     df_by_score = {"All": df}
     for score in scores:
-        df_by_score[f"{score} times"] = filter_dataframe_by_score(df, score)
+        df_by_score[f"{score}/6"] = filter_dataframe_by_score(df, score)
     return df_by_score
     
 def filter_dataframe_by_score(df, score):
@@ -45,7 +45,7 @@ with st.spinner("Loading ..."):
     df_by_score = set_dataframe_per_score()
 
 
-score = st.selectbox("Score", ["All"] + [f"{score} times" for score in scores])
+score = st.selectbox("Score", ["All"] + [f"{score}/6" for score in scores])
 df = df_by_score[score]
 
 chars = [v for v in list(df.mode().values[0]) if isinstance(v, str)]
