@@ -10,9 +10,6 @@ import pandas as pd
 import numpy as np
 import datetime
 
-# TODO: ファイル名にID入れる
-
-
 API_KEY = os.environ["API_KEY"]
 API_KEY_SECRET = os.environ["API_KEY_SECRET"]
 BEARER_TOKEN = os.environ["BEARER_TOKEN"]
