@@ -1,5 +1,6 @@
-from pydrive.drive import GoogleDrive
-from pydrive.auth import GoogleAuth
+from sqlalchemy import create_engine
+import sqlalchemy.orm
+import sqlalchemy.ext.declarative
 import requests
 from requests_oauthlib import OAuth1
 import json
@@ -17,11 +18,7 @@ API_KEY_SECRET = os.environ["API_KEY_SECRET"]
 BEARER_TOKEN = os.environ["BEARER_TOKEN"]
 ACCESS_TOKEN = os.environ["ACCESS_TOKEN"]
 ACCESS_TOKEN_SECRET = os.environ["ACCESS_TOKEN_SECRET"]
-mycreds = os.environ["mycreds"]
-dir_id = os.environ["dir_id"]
-clients_secrets = os.environ["dir_id"]
-with open("client_secrets.json", "w") as f:
-    f.write(clients_secrets)
+db_url = os.environ["db_url"]
 
 
 class Twitter():
@@ -73,46 +70,12 @@ wordle_id = wordle_id()
 res = t.search_query(f'"#Wordle {wordle_id}"')
 
 colors = []
-colors_by_score = {}
 for d in res['data']:
     color = parse_colors(d['text'])
     if color is not None and len(color) % 5 == 0: 
         colors.append(list(color))
-        score = str(len(color))
-        colors_by_score[score] = [color] if score not in colors_by_score else colors_by_score[score] + [color]
 
-# ファイル出力
-pd.DataFrame(colors).to_csv(f"./csv/{wordle_id}_colors.csv")
-for key, value in colors_by_score.items():
-    pd.DataFrame(value).to_csv(f"./csv/{wordle_id}_colors_{key}.csv")
-
-
-# Googleドライブにアップロード    
-gauth = GoogleAuth()
-
-with open("mycreds.txt", "w") as f:
-    f.write(mycreds)
-
-gauth.LoadCredentialsFile("mycreds.txt")
-
-if gauth.credentials is None:
-    gauth.LocalWebserverAuth()
-elif gauth.access_token_expired:
-    gauth.Refresh()
-else:
-    gauth.Authorize()
-gauth.SaveCredentialsFile("mycreds.txt") 
-drive = GoogleDrive(gauth)
-
-
-files = drive.ListFile({'q': "'{}' in parents and trashed=false".format(dir_id)}).GetList()
-for file in files:
-    file.Delete()
-
-path = "./csv"
-for fname in os.listdir(path):
-    f = drive.CreateFile({'title': fname,'parents': [{'id': dir_id}]})
-    f.SetContentFile(f"{path}/{fname}")
-    f.Upload()
-    
-f = None
+# DBに保存
+engine = create_engine(db_url)
+engine.execute('DELETE FROM colors')
+pd.DataFrame(colors).to_sql("colors", con=engine, if_exists="replace", index=False)
