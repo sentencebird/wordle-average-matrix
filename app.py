@@ -35,7 +35,7 @@ def prob_dataframe_by_color(df, color):
     arry = np.array(['{:.2f}'.format(df[i].value_counts().get(color, 0) / df.shape[0]) for i in df.columns])
     return pd.DataFrame(arry.reshape(-1, 5))    
     
-
+st.set_page_config(page_title="Wordle Average Matrix", page_icon="favicon.png")
 st.title("Wordle Average Matrix")    
 st.header(f"Wordle {wordle_id()}")
 st.markdown("<li><a href='https://www.powerlanguage.co.uk/wordle/' target='_blank'>Wordle</a></li>", unsafe_allow_html=True)
