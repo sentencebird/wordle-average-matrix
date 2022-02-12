@@ -1,5 +1,6 @@
 streamlit
-pydrive
 pandas
 numpy
 requests_oauthlib
+sqlalchemy
+psycopg2
