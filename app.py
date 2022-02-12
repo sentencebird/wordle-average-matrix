@@ -42,8 +42,11 @@ st.markdown("<li><a href='https://www.powerlanguage.co.uk/wordle/' target='_blan
 st.markdown(f"<li><a href='https://twitter.com/search?q=%22%23Wordle%20{wordle_id()}%22&src=typed_query&f=live' target='_blank'>Recent tweets of #Wordle {wordle_id()}</a></li>", unsafe_allow_html=True)    
 
 with st.spinner("Loading ..."):
-    df_by_score = set_dataframe_per_score()
-
+    try:
+        df_by_score = set_dataframe_per_score()
+    except:
+        st.error("Loading failed")
+        st.stop()
 
 score = st.selectbox("Score", ["All"] + [f"{score}/6" for score in scores])
 df = df_by_score[score]
