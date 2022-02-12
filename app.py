@@ -60,7 +60,7 @@ def highlight_color(v):
     codes = {"G": "78B15A", "Y": "FBCB59", "W": "E6E7E8"}
     return f'color: #{codes[v]}; background-color: #{codes[v]};'
 
-st.text(f"Average Matrix ({df.size} results)")
+st.text(f"Average Matrix ({df.shape[0]} results)")
 df_colored = pd.DataFrame(arry).style.applymap(highlight_color)
 st.dataframe(df_colored)
     
